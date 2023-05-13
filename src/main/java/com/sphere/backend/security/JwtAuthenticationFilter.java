@@ -8,9 +8,11 @@
 
 package com.sphere.backend.security;
 
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,29 +34,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Value("${app.jwtTokenHead}")
+    private String tokenHead;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String jwt = getJwtFromRequest(request);
+        final String token = request.getHeader(tokenHead);
+        String jwt = getJwtFromRequest(request);
+        //判断当前请求中包含令牌
+        if (!StringUtils.isEmpty(token)) {
+            //token中获取用户的角色权限信息
+            Claims claims = tokenProvider.getTokenClaim(token);
+            if (claims != null) {
+                //如果token未失效 并且 当前上下文权限凭证为null
+                if (!tokenProvider.isTokenExpired(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    /**
+                     * 这里省略了查询数据库token存不存在,有没有失效这个步骤
+                     * 如果是做单点登录,后登录的人登录时候把上一个人的token状态改为失效,这样就能保证同一时间一个帐号只能有一个人能使用
+                     */
 
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromJWT(jwt);
-
-                /*
-                    Note that you could also encode the user's username and roles inside JWT claims
-                    and create the UserDetails object by parsing those claims from the JWT.
-                    That would avoid the following database hit. It's completely up to you.
-                 */
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    //把用户权限信息放到上下文中
+                    Long userId = tokenProvider.getUserIdFromJWT(jwt);
+                    UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
         }
-
         filterChain.doFilter(request, response);
     }
 
