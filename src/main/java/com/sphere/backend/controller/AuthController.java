@@ -69,10 +69,21 @@ public class AuthController {
         //create new user
         User user = new User(registerRequest.getUsername(), registerRequest.getEmail(), registerRequest.getPassword());
         User result = userService.registerUser(user);
+        //generate jwt token
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        registerRequest.getUsername(),
+                        registerRequest.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.getToken(authentication);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        return ResponseEntity.created(location).body(new JwtAuthenticationResponse(jwt));
 
 
     }
