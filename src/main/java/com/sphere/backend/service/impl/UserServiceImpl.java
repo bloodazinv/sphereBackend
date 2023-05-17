@@ -12,4 +12,5 @@ import com.sphere.backend.entity.User;
 public interface UserServiceImpl {
     public User registerUser(User user);
     public boolean isEmailUnique(String email);
+    public boolean isUsernameUnique(String username);
 }

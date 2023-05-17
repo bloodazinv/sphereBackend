@@ -15,6 +15,10 @@ import com.sphere.backend.payload.LoginRequest;
 import com.sphere.backend.payload.RegisterRequest;
 import com.sphere.backend.security.JwtTokenProvider;
 import com.sphere.backend.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @Controller
+@Api(tags = "auth class")
 public class AuthController {
     @Autowired
     private UserService userService;
@@ -41,7 +46,25 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+
     @PostMapping("/auth/login")
+    @ApiOperation("user login")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "usernameOrEmail",
+                    value = "sarah",
+                    dataType = "String",
+                    paramType = "Query",
+                    required = true
+            ),
+            @ApiImplicitParam(
+                    name = "password",
+                    value = "1234567",
+                    dataType = "String",
+                    paramType = "Query",
+                    required = true
+            )
+    })
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -60,9 +83,33 @@ public class AuthController {
 
 
     @PostMapping("/auth/signup")
+    @ApiOperation("user login")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "username",
+                    value = "sarah",
+                    dataType = "String",
+                    paramType = "Query",
+                    required = true
+            ),
+            @ApiImplicitParam(
+                    name = "email",
+                    value = "sarah@mail.com",
+                    dataType = "String",
+                    paramType = "Query",
+                    required = true
+            ),
+            @ApiImplicitParam(
+                    name = "password",
+                    value = "1234567",
+                    dataType = "String",
+                    paramType = "Query",
+                    required = true
+            )
+    })
     private ResponseEntity<?> signupUser(@Valid @RequestBody RegisterRequest registerRequest){
-        if(!userService.isEmailUnique(registerRequest.getEmail())){
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
+        if(!userService.isEmailUnique(registerRequest.getEmail()) || !userService.isUsernameUnique(registerRequest.getUsername())){
+            return new ResponseEntity(new ApiResponse(false, "Email Address or username already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
 

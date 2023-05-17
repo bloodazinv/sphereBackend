@@ -25,7 +25,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class User extends IdBasedEntity implements Serializable {
-    @Column(length = 128, nullable = false)
+    @Column(length = 128, nullable = false, unique = true)
     private String username;
     @Column(length = 128, nullable = false, unique = true)
     private String email;

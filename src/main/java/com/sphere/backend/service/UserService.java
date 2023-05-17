@@ -34,6 +34,12 @@ public class UserService implements UserServiceImpl {
     }
 
     @Override
+    public boolean isUsernameUnique(String username) {
+        User user = userRepo.findByUsername(username);
+        return user == null;
+    }
+
+    @Override
     public User registerUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
