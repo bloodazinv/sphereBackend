@@ -114,7 +114,7 @@ public class AuthController {
         }
 
         //create new user
-        User user = new User(registerRequest.getUsername(), registerRequest.getEmail(), registerRequest.getPassword());
+        User user = new User(registerRequest.getDisplayName(), registerRequest.getUsername(), registerRequest.getEmail(), registerRequest.getPassword());
         User result = userService.registerUser(user);
         //generate jwt token
         Authentication authentication = authenticationManager.authenticate(

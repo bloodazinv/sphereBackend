@@ -39,8 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String token = request.getHeader(tokenHead);
-        String jwt = getJwtFromRequest(request);
+        // final String token = request.getHeader(tokenHead);
+        String token = getJwtFromRequest(request);
         //判断当前请求中包含令牌
         if (!StringUtils.isEmpty(token)) {
             //token中获取用户的角色权限信息
@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                      */
 
                     //把用户权限信息放到上下文中
-                    Long userId = tokenProvider.getUserIdFromJWT(jwt);
+                    Long userId = tokenProvider.getUserIdFromJWT(token);
                     UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -67,7 +67,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!HEREEEENDENNNNNNNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            System.out.println(bearerToken);
             return bearerToken.substring(7, bearerToken.length());
         }
         return null;

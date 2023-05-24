@@ -13,11 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -37,8 +36,14 @@ public class User extends IdBasedEntity implements Serializable {
     private Date registerTime;
 
     private boolean enabled;
+    @Column(length = 128, nullable = false)
+    private String displayName;
 
-    public User(String username, String email, String password) {
+    @OneToMany(mappedBy = "user")
+    private List<UserGroup> userGroups;
+
+    public User(String displayName, String username, String email, String password) {
+        this.displayName = displayName;
         this.username = username;
         this.email = email;
         this.password = password;

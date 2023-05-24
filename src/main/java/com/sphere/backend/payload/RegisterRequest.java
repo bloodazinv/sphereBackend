@@ -13,6 +13,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class RegisterRequest {
+
+    @NotBlank
+    @Size(min = 3, max = 15)
+    private String displayName;
+
     @NotBlank
     @Size(min = 3, max = 15)
     private String username;
@@ -48,5 +53,13 @@ public class RegisterRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }
