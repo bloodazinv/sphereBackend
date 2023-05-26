@@ -7,6 +7,7 @@
  */
 package com.sphere.backend.service.impl;
 
+import com.sphere.backend.dto.GroupDto;
 import com.sphere.backend.entity.Group;
 import com.sphere.backend.entity.User;
 
@@ -14,8 +15,8 @@ import java.util.List;
 
 public interface GroupServiceImpl {
     public List<User> findUsersOfGroup(Group group);
-    public Group createGroup(String groupName, User owner, String description);
+    public GroupDto createGroup(String groupName, User owner, String description);
     public void joinGroup(Group group, User user);
     public void leaveGroup(Group group, User user);
-    public List<Group> findAll();
+    public List<GroupDto> findAll();
 }

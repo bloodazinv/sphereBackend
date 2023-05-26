@@ -7,14 +7,14 @@
  */
 package com.sphere.backend.service.impl;
 
+import com.sphere.backend.dto.GroupDto;
+import com.sphere.backend.dto.PostDto;
 import com.sphere.backend.entity.Group;
-import com.sphere.backend.entity.Post;
-import com.sphere.backend.entity.User;
 
 import java.util.List;
 
 public interface PostServiceImpl {
-    List<Post> getPosts(List<Group> userGroups);
+    List<PostDto> getPosts(List<GroupDto> userGroups);
 
-    public List<Post> getPostsByGroup(Group group);
+    public List<PostDto> getPostsByGroupId(Long groupId);
 }

@@ -19,6 +19,6 @@ import java.util.List;
 @Repository
 public interface PostRepo extends JpaRepository<Post, Long> {
 
-    @Query("SELECT p FROM Post p WHERE p.group = ?1 order by p.createdDate DESC")
-    List<Post> findByGroup(Group group);
+
+    List<Post> findByGroup_Id(Long groupId);
 }

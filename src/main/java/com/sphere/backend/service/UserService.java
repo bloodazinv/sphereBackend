@@ -8,7 +8,10 @@
 
 package com.sphere.backend.service;
 
-import com.sphere.backend.entity.Group;
+import com.sphere.backend.convert.GroupConvert;
+import com.sphere.backend.convert.UserConvert;
+import com.sphere.backend.dto.GroupDto;
+import com.sphere.backend.dto.UserDto;
 import com.sphere.backend.entity.User;
 import com.sphere.backend.entity.UserGroup;
 import com.sphere.backend.repository.UserGroupRepo;
@@ -50,12 +53,12 @@ public class UserService implements UserServiceImpl {
     }
 
     @Override
-    public User registerUser(User user) {
+    public UserDto registerUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         user.setEnabled(true);
         user.setRegisterTime(new Date());
-        return userRepo.save(user);
+        return UserConvert.INSTANCE.po2dto(userRepo.save(user));
     }
 
     @Override
@@ -64,13 +67,13 @@ public class UserService implements UserServiceImpl {
     }
 
     @Override
-    public List<Group> findGroupsOfUser(String username) {
+    public List<GroupDto> findGroupsOfUser(String username) {
         User user = findByUsername(username);
         List<UserGroup> usergroups = user.getUserGroups();
 
-        List<Group> groupsOfUser = new ArrayList<>();
+        List<GroupDto> groupsOfUser = new ArrayList<>();
         for (UserGroup usergroup : usergroups) {
-            groupsOfUser.add(usergroup.getGroup());
+            groupsOfUser.add(GroupConvert.INSTANCE.po2dto(usergroup.getGroup()));
         }
         return groupsOfUser;
 

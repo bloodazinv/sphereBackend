@@ -8,6 +8,8 @@
 
 package com.sphere.backend.controller;
 
+import com.sphere.backend.dto.GroupDto;
+import com.sphere.backend.dto.PostDto;
 import com.sphere.backend.entity.Group;
 import com.sphere.backend.entity.Post;
 import com.sphere.backend.entity.User;
@@ -42,11 +44,11 @@ public class HomeController {
     public HomeResponse getUserGroupsAndPost() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        List<Group> userGroups = userService.findGroupsOfUser(username);
+        List<GroupDto> userGroups = userService.findGroupsOfUser(username);
         if(userGroups.size() == 0){
             userGroups = groupService.findAll();
         }
-        List<Post> userPosts = postService.getPosts(userGroups);
+        List<PostDto> userPosts = postService.getPosts(userGroups);
         return new HomeResponse(userGroups, userPosts);
     }
 

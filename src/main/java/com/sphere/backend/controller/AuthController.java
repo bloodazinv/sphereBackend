@@ -8,6 +8,7 @@
 
 package com.sphere.backend.controller;
 
+import com.sphere.backend.dto.UserDto;
 import com.sphere.backend.entity.User;
 import com.sphere.backend.payload.ApiResponse;
 import com.sphere.backend.payload.JwtAuthenticationResponse;
@@ -115,7 +116,7 @@ public class AuthController {
 
         //create new user
         User user = new User(registerRequest.getDisplayName(), registerRequest.getUsername(), registerRequest.getEmail(), registerRequest.getPassword());
-        User result = userService.registerUser(user);
+        UserDto result = userService.registerUser(user);
         //generate jwt token
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

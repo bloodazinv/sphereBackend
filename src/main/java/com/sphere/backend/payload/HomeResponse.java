@@ -8,33 +8,35 @@
 
 package com.sphere.backend.payload;
 
+import com.sphere.backend.dto.GroupDto;
+import com.sphere.backend.dto.PostDto;
 import com.sphere.backend.entity.Group;
 import com.sphere.backend.entity.Post;
 
 import java.util.List;
 
 public class HomeResponse {
-    private List<Group> groups;
-    private List<Post> posts;
+    private List<GroupDto> groups;
+    private List<PostDto> posts;
 
-    public HomeResponse(List<Group> groups, List<Post> posts) {
+    public HomeResponse(List<GroupDto> groups, List<PostDto> posts) {
         this.groups = groups;
         this.posts = posts;
     }
 
-    public List<Post> getPosts() {
+    public List<PostDto> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(List<PostDto> posts) {
         this.posts = posts;
     }
 
-    public List<Group> getGroups() {
+    public List<GroupDto> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
+    public void setGroups(List<GroupDto> groups) {
         this.groups = groups;
     }
 }
